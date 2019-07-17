@@ -46,13 +46,13 @@ class Model_User extends Model{
         return $authToken;
     }
 
-    function get_devices($user){
+    function get_devices($stuff){
         if(!Model::isTokenPresent($this->token)){
             die();
         }
-        $sql = $this->conn->prepare("select deviceName,dataJson from devices where userName = (select userName from users where
-        authToken = ?)");
-        $sql->execute(array($this->token));
+        $userName = findUserByToken();
+        $sql = $this->conn->prepare("select UUID, deviceName, dataJson from devices where userName = ?");
+        $sql->execute(array($userName));
         $sql = $sql->fetchAll();
         return json_encode($sql);
     }
